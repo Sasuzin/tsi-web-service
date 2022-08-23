@@ -1,0 +1,15 @@
+ ------------------------------ Primeira Aula -------------------------
+
+ Processos de desenvolvimento : Waterfail (1980-1990), Ágil (2000) e DevOps. (2010-agora)
+ Arquiteturas : Monolitica, Em camadas, Microserviços.
+ Deployment : Servidor Físico, Servidor Virtual e Containers.
+ Infraestrutura: Datacenter, Hosting e Nuvem.
+
+                    *Aspectos para chamar uma API*
+
+ * Acesso: local ou remoto 
+ * Protocolo HTTP, RCP.
+ * Transferencia dos dados: Binario, textual.
+ 
+ -------------------------------------------------------------------
+ 
