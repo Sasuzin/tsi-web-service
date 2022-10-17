@@ -17,39 +17,40 @@ class ProdutoController extends Controller
      */
     public function index(Request $request)
     {
-        $input = $request->input('pagina');
 
-        $query = Produto::with('categoria');
-        if($input){
-            $page = $input;
-            $perPage = 10;
-            $query->offset(($page-1)* $perPage)->limit($perPage);
+    $query = Produto::with('categoria'/*,'marca'*/);
+        $filterParameter = $request->input('filtro');
+        if($filterParameter == null){
             $produtos = $query->get();
 
-            $recordsTotal = Produto::count();
-            $numberOfPages = ceil($recordsTotal/ $perPage);
-            $response = response() -> json([
+            $response = response()->json ([
                 'status'=>200,
-                'mensagem'=>'Lista de Produtos retornada',
-                'produtos'=>ProdutoResource::collection($produtos),
-                'meta'=>[
-                    'total_numero_de_registros'=>(string) $recordsTotal,
-                    'numero_de_registros_por_pagina'=>(string) $perPage,
-                    'numero_de_paginas' => (string) $numberOfPages,
-                    'pagina_atual' => $page
-                ]
-                ],200);
+                'mensagem'=>'Lista de produtos retornada',
+                'produtos'=> ProdutoResource::collection($produtos)
+            ],200);
+
         }else{
-            $produtos = $query->get();
+        [$filterCriteria, $filterValue] = explode(":",$filterParameter);
+        if($filterCriteria=="nome_da_categoria"){
+            $produtos=$query->join("categorias","pkcategoria","=","fkcategoria")
+            ->where("nomedacategoria","=",$filterValue)->get();
 
             $response = response()->json([
-                'status' => 200,
-                'mensagem'=> 'Lista de Produtos Retornada',
-                'produtos'=> ProdutoResource::collection($produtos) ,
+                'status'=>200,
+                'mensagem'=>'Lista de produtos retornada - Filtrada',
+                'produtos'=> ProdutoResource::collection($produtos)
             ],200);
+        }else{
+            $response = response()->json([
+                'status'=>406,
+                'mensagem'=>'Filtro nao aceito',
+                'produtos'=> []
+            ],406);
         }
-        return $response;
     }
+    return($response);
+}
+
 
     /**
      * Show the form for creating a new resource.
